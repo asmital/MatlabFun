@@ -1,0 +1,109 @@
+%Running this code takes about 5-10 minutes, as all 5 figures are plotted in one code
+%If it's taking too long, retain only code for the first figure and change the value of 0.0 in LineA to the required value of lambda
+
+format long
+h = 6.63e-34;
+p=pi;
+hbar=h/(2*p);
+m=hbar*hbar;
+w=(1/m)^(1/2);
+u=0:0.01:4;
+v=0:0.01:4;
+figure(1);
+alpha1=calculateAlpha(m,w,hbar);
+alpha2=calculateAlphadash(m,w,hbar,0.0); %LineA
+f1=zeros(4,4);
+temp1=integralConstant(0,0,alpha1);
+temp2=integralConstant(0,0,alpha1);
+for i=1:30
+    for j=1:30
+        f1(i,j)=temp1.*radialFunction(0,0,i/10,alpha1).*temp2.*radialFunction(0,0,j/10,alpha2);
+    end
+end
+a1=surf(1:30,1:30,f1)
+
+figure(2);
+
+alpha1=calculateAlpha(m,w,hbar);
+alpha2=calculateAlphadash(m,w,hbar,0.25);
+f1=zeros(4,4);
+temp1=integralConstant(0,0,alpha1);
+temp2=integralConstant(0,0,alpha1);
+for i=1:30
+    for j=1:30
+        f1(i,j)=temp1.*radialFunction(0,0,i/10,alpha1).*temp2.*radialFunction(0,0,j/10,alpha2);
+    end
+end
+a1=surf(1:30,1:30,f1)
+
+figure(3);
+alpha1=calculateAlpha(m,w,hbar);
+alpha2=calculateAlphadash(m,w,hbar,0.5);
+f1=zeros(4,4);
+temp1=integralConstant(0,0,alpha1);
+temp2=integralConstant(0,0,alpha1);
+for i=1:30
+    for j=1:30
+        f1(i,j)=temp1.*radialFunction(0,0,i/10,alpha1).*temp2.*radialFunction(0,0,j/10,alpha2);
+    end
+end
+a1=surf(1:30,1:30,f1)
+
+figure(4);
+alpha1=calculateAlpha(m,w,hbar);
+alpha2=calculateAlphadash(m,w,hbar,0.75);
+f1=zeros(4,4);
+temp1=integralConstant(0,0,alpha1);
+temp2=integralConstant(0,0,alpha1);
+for i=1:30
+    for j=1:30
+        f1(i,j)=temp1.*radialFunction(0,0,i/10,alpha1).*temp2.*radialFunction(0,0,j/10,alpha2);
+    end
+end
+a1=surf(1:30,1:30,f1)
+
+figure(5);
+alpha1=calculateAlpha(m,w,hbar);
+alpha2=calculateAlphadash(m,w,hbar,1.0);
+f1=zeros(4,4);
+temp1=integralConstant(0,0,alpha1);
+temp2=integralConstant(0,0,alpha1);
+for i=1:30
+    for j=1:30
+        f1(i,j)=temp1.*radialFunction(0,0,i/10,alpha1).*temp2.*radialFunction(0,0,j/10,alpha2);
+    end
+end
+a1=surf(1:30,1:30,f1)
+
+
+
+
+
+
+
+
+function V=calculatePotential(r,m,w)
+V=(1/2).*m.*w.*w.*r.*r;
+end
+
+function E=calculateEnergy(k,l,hbar,w,r,lambda)
+E=hbar*w*((1-lambda)^(1/2))*(2*k+l+(3/2))+0.*r;
+end
+
+function alpha=calculateAlpha(m,w,hbar)
+alpha=(hbar/(m*w))^(1/2)
+end
+
+function alphadash=calculateAlphadash(m,w,hbar,lambda)
+alphadash=(hbar/(m*w*(1-lambda)^(1/2)))
+end
+ 
+function R=radialFunction(k,l,r,alpha)
+R=(r.^l).*exp((-r.*r)/(2.*alpha.*alpha)).*laguerreL(k,(l+(1/2)), (r.*r)/(alpha*alpha));
+end
+
+function N=integralConstant(k,l,alpha)
+temp1=integral((@(x)radialFunction(k,l,x,alpha).*radialFunction(k,l,x,alpha).*x.*x),0,Inf);
+temp2=1/temp1;
+N=(temp2)^(1/2);
+end
